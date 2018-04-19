@@ -47,7 +47,7 @@ dopant_density = 1e21; % in SI
 temperature = linspace(10,800,100); % vector with temperatures in K
 
 % initalize vector storing electron densities
-n_Si = zeros(size(temperature),'like',temperature);
+p_Si = zeros(size(temperature),'like',temperature);
 n_i_Si = zeros(size(temperature),'like',temperature);
 ND_ionized_Si = zeros(size(temperature),'like',temperature);
 
@@ -132,11 +132,10 @@ for k=1:num_temperatures
         FindRootNestedIntervals(fh,energies, ...
         chemical_potential_i_Si(k), tolerance, max_RF_iter);
 
-    n_Si(k) = GetDensityInBand(chemical_potential_Si(k), ...
-                                 E_C,m_n_eff, temperature(k));
+    p_Si(k) = GetDensityInBand(chemical_potential_Si(k), ...
+                                 E_V,m_p_eff, temperature(k));
 
-    ND_ionized_Si(k) = 1.0 - ...
-                         GetDensityInLevel(chemical_potential_Si(k),...
+    NA_ionized_Si(k) =   GetDensityInLevel(chemical_potential_Si(k),...
                          DOS_admin(3),temperature(k))/DOS_admin(3).N;
 
 end;
@@ -148,60 +147,71 @@ clf(figure(4))
 figure(4)
 
 
-    hold on
+    plot(temperature,E_V * ones(size(temperature),'like',dopant_density),... 
+         'LineWidth',1,'Color',[0 1 0],'DisplayName','Si E_C');
     
-    plot(temperature,E_V * ones(size(dopant_density),'like',dopant_density),... 
-         'LineWidth',1,'Color',[1 0 0],'DisplayName','Si E_C');
+    hold on;
+    
     plot(temperature,chemical_potential_i_Si,'--','LineWidth',1,...
-         'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
+         'Color',[0 0 1],'DisplayName','Si E_F_intrinsic');
+     
     plot(temperature(find(chemical_potential_Si < E_C)),...
         chemical_potential_Si(find(chemical_potential_Si < E_C)),...
         'LineWidth',2,'Color',[1 0 0],'DisplayName','Si \mu');
-
+    
+    hold off;
+    
     title({'chemical potential vs temperature',' ',...
-           'in Si at N_D = 10^{21} m^3'});
-    legend('E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
+           'in Si at N_A = 10^{21} m^3'});
+       
+    legend('E_V','\mu_i','\mu', 'Location' ,'northeastoutside');
     
     ylim([0 1.5]);
     xlabel('temperature / K');
     ylabel('energy / eV');
+    
      
-
-clf(figure(5))    
+clf(figure(5))
 figure(5)
 
-    hold on
-    
+
     plot(temperature, n_i_Si/dopant_density,'.','LineWidth',1,'Color',...
          [1 0 0],'DisplayName','Si');
-    plot(temperature, n_Si/dopant_density,'LineWidth',2,'Color',...
-         [1 0 0],'DisplayName','Si');
+     
+    hold on
     
-    title({'electron density vs temperature',' ',...
+
+    plot(temperature, p_Si/dopant_density,'LineWidth',2,'Color',...
+         [1 0 0],'DisplayName','Si');
+     
+    hold off
+    
+    title({'hole density vs temperature',' ',...
           'in Si at N_D = 10^{21} m^3'}); 
-    legend('n_i/N_D','n/N_D', 'Location' ,'northeastoutside');  
+    legend('n_i/N_A','n/N_A', 'Location' ,'northeastoutside');  
            
     ylim([0 2.0]);
     xlabel('temperature / K');
-    ylabel('electron density / N_D');
+    ylabel('hole density / N_D');
 
     
+      
 clf(figure(6))    
 figure(6)
 
 
     % correct for evalation errors
-    ND_ionized_Si(find(ND_ionized_Si == 1)) = 0;
+    NA_ionized_Si(find(NA_ionized_Si == 1)) = 0;
     
-    hold on
-    title({'number of ionized dopants vs temperature',' ',...
-           'in Si at N_D = 10^{21} m^3'}); 
-
-    plot(temperature, ND_ionized_Si,'LineWidth',2,'Color',[1 0 0],...
+    plot(temperature, NA_ionized_Si,'LineWidth',2,'Color',[1 0 0],...
          'DisplayName','Si');
-    legend('N_D^+/N_D', 'Location' ,'northeastoutside');
+     
+    title({'number of ionized acceptors vs temperature',' ',...
+           'in Si at N_D = 10^{21} m^3'});  
+     
+    legend('N_A^-/N_A', 'Location' ,'northeastoutside');
 
     ylim([0 1.1]);
     xlabel('temperature / K');
-    ylabel('density of ionized dopants/ N_D');
+    ylabel('density of ionized acceptors/ N_A');
     

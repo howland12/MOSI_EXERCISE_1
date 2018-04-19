@@ -80,7 +80,7 @@ DOS_admin = AddValenceBandToDOS(DOS_admin,energies,E_V,m_p_eff);
 % add donor level 50meV below conduction band, 
 % level become positive upon emptying
 DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
-                           E_C - 0.05,'P');
+                           E_C - 0.05, 'P');
 
 %-------------------------------------------------------------------------
 % (4a) investigate impact of temperature
@@ -146,20 +146,27 @@ end;
 
 clf(figure(1))
 figure(1)
-
-
-    hold on
     
-    plot(temperature,E_C * ones(size(dopant_density),'like',dopant_density),... 
-         'LineWidth',1,'Color',[1 0 0],'DisplayName','GaAs E_C');
+    plot(temperature,E_C * ones(size(temperature),'like',dopant_density),... 
+         'LineWidth',1,'Color',[0 1 0],'DisplayName','GaAs E_C');
+    
+
+    hold on;
+    
     plot(temperature,chemical_potential_i_GaAs,'--','LineWidth',1,...
-         'Color',[1 0 0],'DisplayName','GaAs E_F_intrinsic');
+         'Color',[0 0 1],'DisplayName','GaAs E_F_intrinsic');
+     
     plot(temperature(find(chemical_potential_GaAs < E_C)),...
         chemical_potential_GaAs(find(chemical_potential_GaAs < E_C)),...
         'LineWidth',2,'Color',[1 0 0],'DisplayName','GaAs \mu');
-
+    
+    hold off;
+    
+    
+    
     title({'chemical potential vs temperature',' ',...
            'in GaAs at N_D = 10^{21} m^3'});
+       
     legend('E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
     
     ylim([0 1.5]);

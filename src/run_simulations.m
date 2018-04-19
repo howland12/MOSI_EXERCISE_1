@@ -8,7 +8,7 @@ run_Ge = true;
 if run_GaAs
     run('main_GaAs.m')
 end
-disp(run_Si)
+
 if run_Si
     run('main_Si.m')
 end

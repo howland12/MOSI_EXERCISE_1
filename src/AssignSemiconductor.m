@@ -62,20 +62,26 @@ m_p_eff = 1.;
 
         case '  Ge'  % Germanium
 
-            m_n_eff = 0.55 ;% in units of electron mass
-            m_p_eff = 0.37 ;% in units of electron mass
-            E_C = E_V + 0.66;  % eV
+            m_n_eff = 0.55 ;    % in units of electron mass
+            m_p_eff = 0.37 ;    % in units of electron mass
+            E_C = E_V + 0.66;   % eV
 
         case '  Si'  % Si
 
-            m_n_eff = 1.18 ;% in units of electron mass
-            m_p_eff = 0.81 ;% in units of electron mass
-            E_C = E_V + 1.12;  % eV
+            m_n_eff = 1.18 ;    % in units of electron mass
+            m_p_eff = 0.81 ;    % in units of electron mass
+            E_C = E_V + 1.12;   % eV
 
         case 'GaAs'  % GaAs
 
-            m_n_eff = 0.067 ;% in units of electron mass
-            m_p_eff = 0.45 ;% in units of electron mass
+            m_n_eff = 0.067 ;   % in units of electron mass
+            m_p_eff = 0.45 ;    % in units of electron mass
+            E_C = E_V + 1.424;  % eV
+            
+        case 'MyMt'  % MyMt
+            
+            m_n_eff = 0.067 ;   % in units of electron mass
+            m_p_eff = 0.45 ;    % in units of electron mass
             E_C = E_V + 1.424;  % eV
 
     end; %switch
