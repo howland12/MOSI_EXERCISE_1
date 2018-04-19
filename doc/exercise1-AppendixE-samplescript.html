@@ -1,0 +1,265 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main_densityVsTemperature_lean</title><meta name="generator" content="MATLAB 8.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-04-18"><meta name="DC.source" content="main_densityVsTemperature_lean.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% -----------------------------------------------------------------------</span>
+<span class="comment">%  determination of Fermi levels and charge carrier densities</span>
+<span class="comment">% -----------------------------------------------------------------------</span>
+<span class="comment">%</span>
+<span class="comment">% hints for usage</span>
+<span class="comment">%</span>
+<span class="comment">% + all spatial quantities are given in SI</span>
+<span class="comment">% + temperatures are given in K</span>
+<span class="comment">% + all energies are given in eV</span>
+
+clear <span class="string">figures</span>
+close <span class="string">all</span>
+clear <span class="string">all</span>
+
+<span class="comment">%-------------------------------------------------------------------------</span>
+<span class="comment">%--- parameter section ---------------------------------------------------</span>
+<span class="comment">%-------------------------------------------------------------------------</span>
+<span class="comment">%</span>
+k_eV = 1.3806504E-23 / 1.602176487E-19; <span class="comment">% Boltzmann constant in eV/K</span>
+
+<span class="comment">% external conditions</span>
+T = 300;  <span class="comment">% in K</span>
+
+<span class="comment">% technical parameters</span>
+<span class="comment">% number of intervals in DOS and energy</span>
+resolution = 1500;
+
+<span class="comment">% threshold and maximal number of iterations for root finding</span>
+tolerance = 1d-4;
+max_RF_iter = 30;
+
+<span class="comment">% script control</span>
+plotlog = true;
+SetPlotProperties() ;
+<span class="comment">%-------------------------------------------------------------------------</span>
+<span class="comment">%--- begin script --------------------------------------------------------</span>
+<span class="comment">%-------------------------------------------------------------------------</span>
+
+
+<span class="comment">% (1) Initialize vectors storing variations</span>
+
+dopant_density = 1e21; <span class="comment">% in SI</span>
+
+<span class="comment">% temperature 0 .. 800 K</span>
+temperature = linspace(10,800,100); <span class="comment">% vector with temperatures in K</span>
+
+<span class="comment">% initalize vector storing electron densities</span>
+n_GaAs = zeros(size(temperature),<span class="string">'like'</span>,temperature);
+n_i_GaAs = zeros(size(temperature),<span class="string">'like'</span>,temperature);
+ND_ionized_GaAs = zeros(size(temperature),<span class="string">'like'</span>,temperature);
+
+chemical_potential_GaAs = zeros(size(temperature),<span class="string">'like'</span>,temperature);
+chemical_potential_i_GaAs = zeros(size(temperature),<span class="string">'like'</span>,temperature);
+
+<span class="comment">%-------------------------------------------------------------------------</span>
+<span class="comment">% (2a) Initialize energy interval, DOS, and occupation vector</span>
+<span class="comment">%      -&gt; available as column vectors</span>
+<span class="comment">%-------------------------------------------------------------------------</span>
+
+
+[E_C, E_V, m_n_eff, m_p_eff] = AssignSemiconductor(<span class="string">'GaAs'</span>);
+
+<span class="comment">% size of energy interval / eV</span>
+E_min = E_V - 0.5;
+E_max = E_C + 0.5 ;
+
+[energies,DOS, occupation] = InitializeEnergyAndDOS(E_min, E_max, E_V, <span class="keyword">...</span>
+                                                    E_C,resolution);
+
+DOS_admin = InitializeDOSAdministration(energies);
+
+<span class="comment">% add conduction band, add empty vector for electron occupation</span>
+DOS_admin = AddConductionBandToDOS(DOS_admin,energies,E_C,m_n_eff);
+
+<span class="comment">% add hole band, add empty vector for hole occupation</span>
+DOS_admin = AddValenceBandToDOS(DOS_admin,energies,E_V,m_p_eff);
+
+<span class="comment">% add donor level 50meV below conduction band,</span>
+<span class="comment">% level become positive upon emptying</span>
+DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,<span class="keyword">...</span>
+                           E_C - 0.05,<span class="string">'P'</span>);
+
+<span class="comment">%-------------------------------------------------------------------------</span>
+<span class="comment">% (4a) investigate impact of temperature</span>
+<span class="comment">%-------------------------------------------------------------------------</span>
+
+
+num_temperatures = length(temperature);
+<span class="comment">% for each temperature</span>
+
+<span class="keyword">for</span> k=1:num_temperatures
+
+    <span class="comment">% --------------------------------------------------------------------</span>
+    <span class="comment">%  evaluate intrinsic Fermi level numerically</span>
+    <span class="comment">% --------------------------------------------------------------------</span>
+    <span class="comment">% (a) cast charge neutrality condition into a form F(E,...) = 0</span>
+    <span class="comment">% (b) function F has to be provided, here chargeNeutralityIntrinsic()</span>
+    <span class="comment">% (c) pass F as function handle fh, make sure that E is indicated as the</span>
+    <span class="comment">%     argument to be evaluated</span>
+
+    fh = @(E) chargeNeutralityIntrinsic(E ,E_C,E_V,m_n_eff,m_p_eff,<span class="keyword">...</span>
+                                        temperature(k));
+
+    <span class="comment">% (d) employ root-finding algorithm to determine the chemical potential</span>
+
+    [chemical_potential_i_GaAs(k), num_iter, error] = <span class="keyword">...</span>
+        FindRootNestedIntervals(fh,energies, (E_C + E_V)/2.+0.2,<span class="keyword">...</span>
+        tolerance, max_RF_iter);
+
+    n = GetDensityInBand(chemical_potential_i_GaAs(k),E_C,m_n_eff, <span class="keyword">...</span>
+                         temperature(k));
+    p = GetDensityInBand(chemical_potential_i_GaAs(k),E_V,m_p_eff, <span class="keyword">...</span>
+                         temperature(k));
+    n_i_GaAs(k) = sqrt(n*p);
+
+    <span class="comment">%---------------------------------------------------------------------</span>
+    <span class="comment">% evaluate Fermi level numerically for a non-intrinsic system</span>
+    <span class="comment">%---------------------------------------------------------------------</span>
+
+    <span class="comment">% (a) cast charge neutrality condition into a form F(E,...) = 0</span>
+    <span class="comment">% (b) function F has to be provided, here chargeNeutrality()</span>
+    <span class="comment">% (c) pass F as function handle fh, make sure that E is indicated as the</span>
+    <span class="comment">%     argument to be evaluated</span>
+
+    fh = @(E) chargeNeutrality(E,DOS_admin,m_n_eff,m_p_eff,temperature(k));
+
+    <span class="comment">% (d) employ root-finding algorithm to determine the chemical potential</span>
+
+    [chemical_potential_GaAs(k), num_iter, error] = <span class="keyword">...</span>
+        FindRootNestedIntervals(fh,energies, <span class="keyword">...</span>
+        chemical_potential_i_GaAs(k), tolerance, max_RF_iter);
+
+    n_GaAs(k) = GetDensityInBand(chemical_potential_GaAs(k), <span class="keyword">...</span>
+                                 E_C,m_n_eff, temperature(k));
+
+    ND_ionized_GaAs(k) = 1.0 - <span class="keyword">...</span>
+                         GetDensityInLevel(chemical_potential_GaAs(k),<span class="keyword">...</span>
+                         DOS_admin(3),temperature(k))/DOS_admin(3).N;
+
+<span class="keyword">end</span>;
+</pre><pre class="codeinput">figure(1)
+
+
+    hold <span class="string">on</span>
+
+    plot(temperature,E_C * ones(size(dopant_density),<span class="string">'like'</span>,dopant_density),<span class="keyword">...</span>
+         <span class="string">'LineWidth'</span>,1,<span class="string">'Color'</span>,[1 0 0],<span class="string">'DisplayName'</span>,<span class="string">'GaAs E_C'</span>);
+    plot(temperature,chemical_potential_i_GaAs,<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,1,<span class="keyword">...</span>
+         <span class="string">'Color'</span>,[1 0 0],<span class="string">'DisplayName'</span>,<span class="string">'GaAs E_F_intrinsic'</span>);
+    plot(temperature(find(chemical_potential_GaAs &lt; E_C)),<span class="keyword">...</span>
+        chemical_potential_GaAs(find(chemical_potential_GaAs &lt; E_C)),<span class="keyword">...</span>
+        <span class="string">'LineWidth'</span>,2,<span class="string">'Color'</span>,[1 0 0],<span class="string">'DisplayName'</span>,<span class="string">'GaAs \mu'</span>);
+
+    title({<span class="string">'chemical potential vs temperature'</span>,<span class="string">' '</span>,<span class="keyword">...</span>
+           <span class="string">'in GaAs at N_D = 10^{21} m^3'</span>});
+    legend(<span class="string">'E_C'</span>,<span class="string">'\mu_i'</span>,<span class="string">'\mu'</span>, <span class="string">'Location'</span> ,<span class="string">'northeastoutside'</span>);
+
+    ylim([0 1.5]);
+    xlabel(<span class="string">'temperature / K'</span>);
+    ylabel(<span class="string">'energy / eV'</span>);
+
+
+figure(2)
+
+    hold <span class="string">on</span>
+
+    plot(temperature, n_i_GaAs/dopant_density,<span class="string">'.'</span>,<span class="string">'LineWidth'</span>,1,<span class="string">'Color'</span>,<span class="keyword">...</span>
+         [1 0 0],<span class="string">'DisplayName'</span>,<span class="string">'GaAs'</span>);
+    plot(temperature, n_GaAs/dopant_density,<span class="string">'LineWidth'</span>,2,<span class="string">'Color'</span>,<span class="keyword">...</span>
+         [1 0 0],<span class="string">'DisplayName'</span>,<span class="string">'GaAs'</span>);
+
+    title({<span class="string">'electron density vs temperature'</span>,<span class="string">' '</span>,<span class="keyword">...</span>
+          <span class="string">'in GaAs at N_D = 10^{21} m^3'</span>});
+    legend(<span class="string">'n_i/N_D'</span>,<span class="string">'n/N_D'</span>, <span class="string">'Location'</span> ,<span class="string">'northeastoutside'</span>);
+
+    ylim([0 2.0]);
+    xlabel(<span class="string">'temperature / K'</span>);
+    ylabel(<span class="string">'electron density / N_D'</span>);
+
+figure(3)
+
+
+    <span class="comment">% correct for evalation errors</span>
+    ND_ionized_GaAs(find(ND_ionized_GaAs == 1)) = 0;
+
+    hold <span class="string">on</span>
+    title({<span class="string">'number of ionized dopants vs temperature'</span>,<span class="string">' '</span>,<span class="keyword">...</span>
+           <span class="string">'in GaAs at N_D = 10^{21} m^3'</span>});
+
+    plot(temperature, ND_ionized_GaAs,<span class="string">'LineWidth'</span>,2,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+         <span class="string">'DisplayName'</span>,<span class="string">'GaAs'</span>);
+    legend(<span class="string">'N_D^+/N_D'</span>, <span class="string">'Location'</span> ,<span class="string">'northeastoutside'</span>);
+
+    ylim([0 1.1]);
+    xlabel(<span class="string">'temperature / K'</span>);
+    ylabel(<span class="string">'density of ionized dopants/ N_D'</span>);
+</pre>
+--></body></html>
