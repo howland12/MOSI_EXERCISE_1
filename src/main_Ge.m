@@ -11,7 +11,8 @@
 
 % clear figures
 % close all
-clear all
+% clear all
+clearvars -except run_GaAs run_Si run_Ge
 
 %-------------------------------------------------------------------------
 %--- parameter section ---------------------------------------------------
@@ -46,12 +47,12 @@ dopant_density = 1e21; % in SI
 temperature = linspace(10,800,100); % vector with temperatures in K
 
 % initalize vector storing electron densities
-n_Si = zeros(size(temperature),'like',temperature);
-n_i_Si = zeros(size(temperature),'like',temperature);
-ND_ionized_Si = zeros(size(temperature),'like',temperature);
+n_Ge = zeros(size(temperature),'like',temperature);
+n_i_Ge = zeros(size(temperature),'like',temperature);
+ND_ionized_Ge = zeros(size(temperature),'like',temperature);
 
-chemical_potential_Si = zeros(size(temperature),'like',temperature);
-chemical_potential_i_Si = zeros(size(temperature),'like',temperature);
+chemical_potential_Ge = zeros(size(temperature),'like',temperature);
+chemical_potential_i_Ge = zeros(size(temperature),'like',temperature);
 
 %-------------------------------------------------------------------------
 % (2a) Initialize energy interval, DOS, and occupation vector 
@@ -59,7 +60,7 @@ chemical_potential_i_Si = zeros(size(temperature),'like',temperature);
 %-------------------------------------------------------------------------
 
 
-[E_C, E_V, m_n_eff, m_p_eff] = AssignSemiconductor('Si');
+[E_C, E_V, m_n_eff, m_p_eff] = AssignSemiconductor('Ge');
 
 % size of energy interval / eV 
 E_min = E_V - 0.5;
@@ -104,15 +105,15 @@ for k=1:num_temperatures
 
     % (d) employ root-finding algorithm to determine the chemical potential
 
-    [chemical_potential_i_Si(k), num_iter, error] = ...
+    [chemical_potential_i_Ge(k), num_iter, error] = ...
         FindRootNestedIntervals(fh,energies, (E_C + E_V)/2.+0.2,...
         tolerance, max_RF_iter);
 
-    n = GetDensityInBand(chemical_potential_i_Si(k),E_C,m_n_eff, ...
+    n = GetDensityInBand(chemical_potential_i_Ge(k),E_C,m_n_eff, ...
                          temperature(k));
-    p = GetDensityInBand(chemical_potential_i_Si(k),E_V,m_p_eff, ...
+    p = GetDensityInBand(chemical_potential_i_Ge(k),E_V,m_p_eff, ...
                          temperature(k));
-    n_i_Si(k) = sqrt(n*p);
+    n_i_Ge(k) = sqrt(n*p);
 
     %---------------------------------------------------------------------
     % evaluate Fermi level numerically for a non-intrinsic system
@@ -127,36 +128,38 @@ for k=1:num_temperatures
 
     % (d) employ root-finding algorithm to determine the chemical potential
 
-    [chemical_potential_Si(k), num_iter, error] = ...
+    [chemical_potential_Ge(k), num_iter, error] = ...
         FindRootNestedIntervals(fh,energies, ...
-        chemical_potential_i_Si(k), tolerance, max_RF_iter);
+        chemical_potential_i_Ge(k), tolerance, max_RF_iter);
 
-    n_Si(k) = GetDensityInBand(chemical_potential_Si(k), ...
+    n_Ge(k) = GetDensityInBand(chemical_potential_Ge(k), ...
                                  E_C,m_n_eff, temperature(k));
 
-    ND_ionized_Si(k) = 1.0 - ...
-                         GetDensityInLevel(chemical_potential_Si(k),...
+    ND_ionized_Ge(k) = 1.0 - ...
+                         GetDensityInLevel(chemical_potential_Ge(k),...
                          DOS_admin(3),temperature(k))/DOS_admin(3).N;
 
 end;
 
 %%
 
-figure(4)
+
+clf(figure(7))
+figure(7)
 
 
     hold on
     
     plot(temperature,E_V * ones(size(dopant_density),'like',dopant_density),... 
-         'LineWidth',1,'Color',[1 0 0],'DisplayName','Si E_C');
-    plot(temperature,chemical_potential_i_Si,'--','LineWidth',1,...
-         'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
-    plot(temperature(find(chemical_potential_Si < E_C)),...
-        chemical_potential_Si(find(chemical_potential_Si < E_C)),...
-        'LineWidth',2,'Color',[1 0 0],'DisplayName','Si \mu');
+         'LineWidth',1,'Color',[1 0 0],'DisplayName','Ge E_C');
+    plot(temperature,chemical_potential_i_Ge,'--','LineWidth',1,...
+         'Color',[1 0 0],'DisplayName','Ge E_F_intrinsic');
+    plot(temperature(find(chemical_potential_Ge < E_C)),...
+        chemical_potential_Ge(find(chemical_potential_Ge < E_C)),...
+        'LineWidth',2,'Color',[1 0 0],'DisplayName','Ge \mu');
 
     title({'chemical potential vs temperature',' ',...
-           'in Si at N_D = 10^{21} m^3'});
+           'in Ge at N_D = 10^{21} m^3'});
     legend('E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
     
     ylim([0 1.5]);
@@ -164,35 +167,38 @@ figure(4)
     ylabel('energy / eV');
      
 
-figure(5)
+clf(figure(8))    
+figure(8)
 
     hold on
     
-    plot(temperature, n_i_Si/dopant_density,'.','LineWidth',1,'Color',...
-         [1 0 0],'DisplayName','Si');
-    plot(temperature, n_Si/dopant_density,'LineWidth',2,'Color',...
-         [1 0 0],'DisplayName','Si');
+    plot(temperature, n_i_Ge/dopant_density,'.','LineWidth',1,'Color',...
+         [1 0 0],'DisplayName','Ge');
+    plot(temperature, n_Ge/dopant_density,'LineWidth',2,'Color',...
+         [1 0 0],'DisplayName','Ge');
     
     title({'electron density vs temperature',' ',...
-          'in Si at N_D = 10^{21} m^3'}); 
+          'in Ge at N_D = 10^{21} m^3'}); 
     legend('n_i/N_D','n/N_D', 'Location' ,'northeastoutside');  
            
     ylim([0 2.0]);
     xlabel('temperature / K');
     ylabel('electron density / N_D');
 
-figure(6)
+    
+clf(figure(9))    
+figure(9)
 
 
     % correct for evalation errors
-    ND_ionized_Si(find(ND_ionized_Si == 1)) = 0;
+    ND_ionized_Ge(find(ND_ionized_Ge == 1)) = 0;
     
     hold on
     title({'number of ionized dopants vs temperature',' ',...
-           'in Si at N_D = 10^{21} m^3'}); 
+           'in Ge at N_D = 10^{21} m^3'}); 
 
-    plot(temperature, ND_ionized_Si,'LineWidth',2,'Color',[1 0 0],...
-         'DisplayName','Si');
+    plot(temperature, ND_ionized_Ge,'LineWidth',2,'Color',[1 0 0],...
+         'DisplayName','Ge');
     legend('N_D^+/N_D', 'Location' ,'northeastoutside');
 
     ylim([0 1.1]);
