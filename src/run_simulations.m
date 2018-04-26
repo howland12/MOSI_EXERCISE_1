@@ -31,7 +31,7 @@ figure(7)
             'LineWidth',2,'Color',[0 1 0],'DisplayName','Ge \mu');
 
         title({'chemical potential vs temperature',' ',...
-               'in Ge at N_D = 10^{21} m^3'});
+               'in Si at N_D = 10^{21} m^3'});
         legend('E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
 
         ylim([0 1.5]);
