@@ -1,4 +1,4 @@
-function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, doping_type)
+function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, dopant_density, doping_type)
 
 
     % -----------------------------------------------------------------------
@@ -37,8 +37,6 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
 
 
     % (1) Initialize vectors storing variations
-
-    dopant_density = 1e21; % in SI
 
     % temperature 0 .. 800 K
     temperature = linspace(10,800,100); % vector with temperatures in K

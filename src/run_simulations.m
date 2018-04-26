@@ -1,8 +1,8 @@
 
 clearvars;
-[Si_p_doped] = simulate_semiconductor('Si', 0.1, 'p-doped');
-[Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 'p-doped');
-[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 'p-doped');
+[Si_p_doped] = simulate_semiconductor('Si', 0.1, 1e21,'p-doped');
+[Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 1e21,'p-doped');
+[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 1e21,'p-doped');
 
 clf(figure(1))
 figure(1)
@@ -105,10 +105,10 @@ figure(5)
   
     
     
-    
-    
-    
-    
+[Si_n_doped] = simulate_semiconductor('Si', -0.1, 1e21,'n-doped');
+
+
+ 
     
     
     
