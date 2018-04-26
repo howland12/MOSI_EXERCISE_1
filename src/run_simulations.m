@@ -2,7 +2,7 @@
 clearvars;
 [Si_p_doped] = simulate_semiconductor('Si', 0.1, 'p-doped');
 [Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 'p-doped');
-[GaAs_p_doped] = simulate_semiconductor('GeAs', 0.1, 'p-doped');
+[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 'p-doped');
 
 clf(figure(1))
 figure(1)
@@ -52,8 +52,8 @@ figure(3)
              'LineWidth',1,'Color',[0 0 1],'DisplayName','Si E_C');
         plot(GaAs_p_doped.temperature,GaAs_p_doped.chemical_potential_i,'--','LineWidth',1,...
              'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
-        plot(GaAs_p_doped.temperature,...
-            GaAs_p_doped.chemical_potential,...
+        plot(GaAs_p_doped.temperature(find(GaAs_p_doped.chemical_potential > GaAs_p_doped.E_V)),...
+            GaAs_p_doped.chemical_potential(find(GaAs_p_doped.chemical_potential > GaAs_p_doped.E_V)),...
             'LineWidth',2,'Color',[0 1 0],'DisplayName','Si \mu');
 
         title({'chemical potential vs temperature',' ',...
