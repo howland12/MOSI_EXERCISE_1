@@ -78,11 +78,11 @@ m_p_eff = 1.;
             m_p_eff = 0.45 ;    % in units of electron mass
             E_C = E_V + 1.424;  % eV
             
-        case 'MyMt'  % MyMt
+        case 'In3As'  % In3As: http://www.ioffe.ru/SVA/NSM/Semicond/InAs/bandstr.html
             
-            m_n_eff = 0.067 ;   % in units of electron mass
-            m_p_eff = 0.45 ;    % in units of electron mass
-            E_C = E_V + 1.424;  % eV
+            m_n_eff = 0.023 ;   % in units of electron mass
+            m_p_eff = 0.41 ;    % in units of electron mass
+            E_C = E_V + 0.354;  % eV
 
     end; %switch
 end
