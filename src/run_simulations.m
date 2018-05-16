@@ -144,9 +144,9 @@ grid on
         ylabel('energy / eV');  
 % intrinsic and main chrge carrier Si, Ge , GaAs%   
 temperaturenew=linspace(10,1200,100);
-[Si_p_dopednew] = simulate_semiconductor('Si', 0.1, 1e21,'p-doped', temperaturenew);
-[Ge_p_dopednew] = simulate_semiconductor('Ge', 0.1, 1e21,'p-doped', temperaturenew);
-[GaAs_p_dopednew] = simulate_semiconductor('GaAs', 0.1, 1e21,'p-doped', temperaturenew);
+[Si_p_dopednew] = simulate_semiconductor('Si', 0.1,'sharp', 1e21,'p-doped', temperaturenew);
+[Ge_p_dopednew] = simulate_semiconductor('Ge', 0.1,'sharp', 1e21,'p-doped', temperaturenew);
+[GaAs_p_dopednew] = simulate_semiconductor('GaAs', 0.1,'sharp', 1e21,'p-doped', temperaturenew);
 clf(figure(6))
 figure(6)
 
