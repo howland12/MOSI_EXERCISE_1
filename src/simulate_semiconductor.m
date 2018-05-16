@@ -1,4 +1,4 @@
-function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, dopant_density, doping_type)
+function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, dopant_density, doping_type, temperature)
 
 
     % -----------------------------------------------------------------------
@@ -38,8 +38,6 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
 
     % (1) Initialize vectors storing variations
 
-    % temperature 0 .. 800 K
-    temperature = linspace(10,800,100); % vector with temperatures in K
 
     % initalize vector storing electron densities
     main_charge_carrier_number = zeros(size(temperature),'like',temperature);

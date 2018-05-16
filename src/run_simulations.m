@@ -1,8 +1,13 @@
 
 clearvars;
-[Si_p_doped] = simulate_semiconductor('Si', 0.1, 1e21,'p-doped');
-[Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 1e21,'p-doped');
-[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 1e21,'p-doped');
+close all;
+
+% temperature 0 .. 800 K
+temperature = linspace(10,800,100); % vector with temperatures in K
+
+[Si_p_doped] = simulate_semiconductor('Si', 0.1, 1e21,'p-doped', temperature);
+[Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 1e21,'p-doped', temperature);
+[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 1e21,'p-doped', temperature);
 
 clf(figure(1))
 figure(1)
@@ -103,9 +108,38 @@ figure(5)
     ylabel('density of ionized dopants/ N_A');
     
   
-    
-    
-[Si_n_doped] = simulate_semiconductor('Si', -0.1, 1e21,'n-doped');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                         TASK 2                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+temperature = 300;
+
+%-------------------------- simulation loop -------------------------------
+ND_vector = logspace(13,25,100);
+data_container = cell(1,length(ND_vector));
+for i = 1 : length(ND_vector)
+    data_container{1,i} = simulate_semiconductor('Si', -0.1, ND_vector(i),'n-doped', temperature);
+end
+
+%-------------------------- extract needed data from container ------------
+chemical_potential_vector = zeros([1 length(ND_vector)]);
+for i = 1 : length(ND_vector)
+    chemical_potential_vector(i) = data_container{i}.chemical_potential;
+end
+
+%------------------------- plot simulation results ------------------------
+figure()
+set(gcf,'color','w');
+semilogx(ND_vector, chemical_potential_vector);
+grid on
+xlabel('N_D / 1');
+ylabel('\mu / ev');
+xlim([ND_vector(1), ND_vector(end)]);
+
+
+
+
 
 
  
