@@ -216,6 +216,7 @@ grid on
 %%%                         TASK 1(d)                                      %%%     
 
 bandgap_multiplier_vec=linspace(0.1,2,5);
+legendInfo = cell(length(bandgap_multiplier_vec),1);
 bandgap_container = cell(1,length(bandgap_multiplier_vec));
 for i = 1 : length(bandgap_multiplier_vec)
     bandgap_container{1,i} = simulate_semiconductor('Si', 0.1, 'sharp', 10^21,'p-doped', temperature, bandgap_multiplier_vec(i), e_m_n_multiplier, e_m_p_multiplier);
@@ -227,12 +228,18 @@ end
 figure(11)
 hold on
 for i=1: length(bandgap_multiplier_vec)
-    plot(temperature,bandgap_potential_vec(i,:))
+    plot(temperature,bandgap_potential_vec(i,:),'LineWidth',2)
+    legendInfo{i} = ['E_g =' num2str(bandgap_multiplier_vec(i)) ' * E_{g_{Si}}' ];
 end
-
+hold off
+grid on
+xlabel('temperature / K');
+ylabel('\mu/ eV');
+legend(legendInfo,'Location','Northwest');
 
 
 e_m_p_multiplier_vec=linspace(0.1,2,5);
+legendInfo = cell(length(e_m_p_multiplier_vec),1);
 mass_container = cell(1,length(e_m_p_multiplier_vec));
 for i = 1 : length(e_m_p_multiplier_vec)
     mass_container{1,i} = simulate_semiconductor('Si', 0.1, 'sharp', 10^21,'p-doped', temperature, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier_vec(i));
@@ -244,10 +251,14 @@ end
 figure(12)
 hold on
 for i=1: length(e_m_p_multiplier_vec)
-    plot(temperature,mass_potential_vec(i,:))
+    plot(temperature,mass_potential_vec(i,:),'LineWidth',2)
+    legendInfo{i} = ['e\_m\_n = ' num2str(bandgap_multiplier_vec(i)) ' * e\_m\_n_{Si}' ];
 end
-    
-    
+hold off
+grid on
+xlabel('temperature / K');
+ylabel('\mu/ eV');
+legend(legendInfo,'Location','Northwest');
 
 
 
