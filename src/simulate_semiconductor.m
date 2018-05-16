@@ -1,4 +1,4 @@
-function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, energy_level_shape, dopant_density, doping_type, temperature)
+function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, energy_level_shape, dopant_density, doping_type, temperature, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier)
 
 
     % -----------------------------------------------------------------------
@@ -55,6 +55,10 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
 
     [E_C, E_V, m_n_eff, m_p_eff] = AssignSemiconductor(semiconductor);
 
+    E_C = E_C * bandgap_multiplier;
+    m_n_eff = m_n_eff * e_m_n_multiplier;
+    m_p_eff = m_p_eff * e_m_p_multiplier;
+    
     % size of energy interval / eV 
     E_min = E_V - 0.5;
     E_max = E_C + 0.5 ;
@@ -177,6 +181,5 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
     struct_semiconductor.ionized_dopants = ionized_dopants;
     struct_semiconductor.main_charge_carrier_number = main_charge_carrier_number;
     
-
     %%
 
