@@ -45,7 +45,7 @@ clf(figure(2))
 figure(2)
 
     hold on
-
+    set(gcf,'color','w');
     plot(Si_p_doped.temperature,  Si_p_doped.n_i/Si_p_doped.dopant_density,'.','LineWidth',1,'Color',...
          [1 0 0],'DisplayName','Si_p_doped');
     plot(Si_p_doped.temperature, Si_p_doped.main_charge_carrier_number/Si_p_doped.dopant_density,'LineWidth',2,'Color',...
@@ -63,17 +63,18 @@ grid on
     ylabel('hole density / N_A');
 clf(figure(3))
 figure(3)
+    set(gcf,'color','w');
  % correct for evalation errors
     Si_p_doped.ionized_dopants(find(Si_p_doped.ionized_dopants == 1)) = 0;
 
     hold on
     
     plot(Si_p_doped.temperature, Si_p_doped.ionized_dopants,'LineWidth',2,'Color',[1 0 0],...
-         'DisplayName','Ge');
+         'DisplayName','Si');
     legend('N_A^+/N_A', 'Location' ,'northeastoutside');
     
     title({'number of ionized dopants vs temperature',' ',...
-           'in Si at N_A = 10^{21} m^3'}); 
+           'in Si-p-doped at N_A = 10^{21} m^3'}); 
 
                ax = gca;
 ax.FontSize = 11;
@@ -151,7 +152,7 @@ clf(figure(6))
 figure(6)
 
     hold on
-
+    set(gcf,'color','w');
     plot(Si_p_dopednew.temperature,  Si_p_dopednew.n_i/Si_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
          [1 0 0],'DisplayName','Si_p_dopednew');
          plot(Ge_p_dopednew.temperature,  Ge_p_dopednew.n_i/Ge_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
@@ -161,22 +162,51 @@ figure(6)
     plot(Si_p_dopednew.temperature, Si_p_dopednew.main_charge_carrier_number/Si_p_dopednew.dopant_density,'LineWidth',2,'Color',...
          [1 0 0],'DisplayName','Si_p_dopednew');
          plot(Ge_p_dopednew.temperature, Ge_p_dopednew.main_charge_carrier_number/Ge_p_dopednew.dopant_density,'LineWidth',2,'Color',...
-         'g','DisplayName','Si_p_doped');
+         'g','DisplayName','Ge_p_dopednew');
          plot(GaAs_p_dopednew.temperature, GaAs_p_dopednew.main_charge_carrier_number/GaAs_p_dopednew.dopant_density,'LineWidth',2,'Color',...
-         'b','DisplayName','Si_p_doped');
+         'b','DisplayName','GaAs_p_dopednew');
      
-
+  ylim([0 2])
     title({'electron density vs temperature',' ',...
-          'in Si-p-doped at N_A = 10^{21} m^3'});
+          'in Si-p-doped, Ge-p-doped and GaAs-p-doped  at N_A = 10^{21} m^3'});
                 ax = gca;
 ax.FontSize = 11;
 grid on
-   % legend('n_i/N_A','n/N_A', 'Location' ,'northeastoutside');
+    legend('Si-n_i/N_A','Ge-n_i/N_A','GaAs-n_i/N_A','Si-n/N_A','Ge-n/N_A','GaAs-n/N_A', 'Location' ,'northeastoutside');
 
   
     xlabel('temperature / K');
     ylabel('hole density / N_A');
 
+ % ionized dopants Si, Ge ,GaAs   
+clf(figure(7))
+figure(7)
+ % correct for evalation errors
+     set(gcf,'color','w');
+    Si_p_doped.ionized_dopants(find(Si_p_doped.ionized_dopants == 1)) = 0;
+    Ge_p_doped.ionized_dopants(find(Ge_p_doped.ionized_dopants == 1)) = 0;
+    GaAs_p_doped.ionized_dopants(find(GaAs_p_doped.ionized_dopants == 1)) = 0;
+
+    hold on
+    
+    plot(Si_p_doped.temperature, Si_p_doped.ionized_dopants,'LineWidth',2,'Color',[1 0 0],...
+         'DisplayName','Si');
+     plot(Ge_p_doped.temperature, Ge_p_doped.ionized_dopants,'LineWidth',2,'Color','g',...
+         'DisplayName','Ge');
+     plot(GaAs_p_doped.temperature, GaAs_p_doped.ionized_dopants,'LineWidth',2,'Color','b',...
+         'DisplayName','GaAs');
+    legend('Si-N_A^+/N_A','Ge-N_A^+/N_A','GaAs-N_A^+/N_A', 'Location' ,'northeastoutside');
+    
+    title({'number of ionized dopants vs temperature',' ',...
+           'in Si-p-doped, Ge-p-doped and GaAs-p-doped  at N_A = 10^{21} m^3'}); 
+
+               ax = gca;
+ax.FontSize = 11;
+grid on
+    
+    ylim([0 1.1]);
+    xlabel('temperature / K');
+    ylabel('density of ionized dopants/ N_A');
 
 
 
