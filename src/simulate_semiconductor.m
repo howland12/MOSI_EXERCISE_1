@@ -1,4 +1,4 @@
-function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, dopant_density, doping_type, temperature)
+function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, energy_level_shape, dopant_density, doping_type, temperature)
 
 
     % -----------------------------------------------------------------------
@@ -74,11 +74,21 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
     % level become positive upon emptying
     
     if doping_type == 'p-doped'
-        DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
-                               E_V + doping_energy, 'N');
+        if strcmp(energy_level_shape,'sharp')
+            DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
+                                   E_V + doping_energy, 'N');
+        else
+            DOS_admin  = AddGaussToDOS(DOS_admin,energies,dopant_density,...
+                                   E_V + doping_energy, 50e-3, 'N');
+        end
     else
-        DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
-                               E_C + doping_energy, 'P');
+        if strcmp(energy_level_shape,'sharp')
+            DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
+                                   E_C + doping_energy, 'P');
+        else
+            DOS_admin  = AddGaussToDOS(DOS_admin,energies,dopant_density,...
+                                   E_C + doping_energy, 50e-3, 'P');
+        end
     end
 
 

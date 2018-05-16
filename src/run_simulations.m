@@ -5,9 +5,9 @@ close all;
 % temperature 0 .. 800 K
 temperature = linspace(10,800,100); % vector with temperatures in K
 
-[Si_p_doped] = simulate_semiconductor('Si', 0.1, 1e21,'p-doped', temperature);
-[Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 1e21,'p-doped', temperature);
-[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 1e21,'p-doped', temperature);
+[Si_p_doped] = simulate_semiconductor('Si', 0.1, 'sharp', 1e21,'p-doped', temperature);
+[Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 'sharp', 1e21,'p-doped', temperature);
+[GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 'sharp', 1e21,'p-doped', temperature);
 
 clf(figure(1))
 h=figure(1);
@@ -154,32 +154,75 @@ grid on
 %%%                         TASK 2                                       %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%--------------------- common parameters for task 2 -----------------------
 temperature = 300;
-
-%-------------------------- simulation loop -------------------------------
-for i = 1 : length(ND_vector)
 ND_vector = logspace(13,25,100);
-data_container = cell(1,length(ND_vector));
-    data_container{1,i} = simulate_semiconductor('Si', -0.1, ND_vector(i),'n-doped', temperature);
-end
 
-%-------------------------- extract needed data from container ------------
-chemical_potential_vector = zeros([1 length(ND_vector)]);
+
+%############################## a #########################################
+
+%-------------------------- simulation loop -> task a) --------------------
+data_container_a = cell(1,length(ND_vector));
 for i = 1 : length(ND_vector)
-    chemical_potential_vector(i) = data_container{i}.chemical_potential;
+    data_container_a{1,i} = simulate_semiconductor('Si', -0.660000000000000, 'sharp', ND_vector(i),'n-doped', temperature);
 end
 
-%------------------------- plot simulation results ------------------------
+%---------------------- extract needed data from container -> task a) -----
+chemical_potential_vector_a = zeros([1 length(ND_vector)]);
+for i = 1 : length(ND_vector)
+    chemical_potential_vector_a(i) = data_container_a{i}.chemical_potential;
+end
+
+%############################## b #########################################
+
+%-------------------------- simulation loop -> task b) --------------------
+donor_state_energy = -(data_container_a{1}.E_C / 2 + 0.1);
+ND_vector = logspace(13,25,100);
+data_container_b = cell(1,length(ND_vector));
+for i = 1 : length(ND_vector)
+    data_container_b{1,i} = simulate_semiconductor('Si', donor_state_energy, 'gaussian', ND_vector(i),'n-doped', temperature);
+end
+
+%---------------------- extract needed data from container -> task b) -----
+chemical_potential_vector_b = zeros([1 length(ND_vector)]);
+for i = 1 : length(ND_vector)
+    chemical_potential_vector_b(i) = data_container_b{i}.chemical_potential;
+end
+
+%###################### Results of Task 2 a) and b) ####################### 
+
+%------------------------- plot simulation results -> task a) --------------
+figure();
 set(gcf,'color','w');
 figure()
-semilogx(ND_vector, chemical_potential_vector);
+semilogx(ND_vector, chemical_potential_vector_a);
 grid on
 xlabel('N_D / 1');
 ylabel('\mu / ev');
 xlim([ND_vector(1), ND_vector(end)]);
- 
-    
-    
+
+%------------------------- plot simulation results -> task b) -------------
+figure();
+set(gcf,'color','w');
+figure()
+semilogx(ND_vector, chemical_potential_vector_b);
+grid on
+xlabel('N_D / 1');
+ylabel('\mu / ev');
+xlim([ND_vector(1), ND_vector(end)]);
+
+
+%------------------------ plot combined results -> task a) and b) ---------
+figure();
+semilogx(ND_vector, chemical_potential_vector_a);
+hold on;
+semilogx(ND_vector, chemical_potential_vector_b);
+hold off;
+grid on
+xlabel('N_D / 1');
+ylabel('\mu / ev');
+xlim([ND_vector(1), ND_vector(end)]);
+legend('sharp level shape','gaussian shape')
     
     
     
