@@ -24,10 +24,10 @@ h=figure(1);
         hold on
 
         plot(Si_p_doped.temperature,Si_p_doped.E_V * ones(size(Si_p_doped.temperature)),... 
-             'LineWidth',1,'Color',[0 0 1],'DisplayName','Si E_V');
+             'LineWidth',2,'Color',[0 0 1],'DisplayName','Si E_V');
         plot(Si_p_doped.temperature,Si_p_doped.E_C * ones(size(Si_p_doped.temperature)),... 
-             'LineWidth',1,'Color','k','DisplayName','Si E_C');
-        plot(Si_p_doped.temperature,Si_p_doped.chemical_potential_i,'--','LineWidth',1,...
+             'LineWidth',2,'Color','k','DisplayName','Si E_C');
+        plot(Si_p_doped.temperature,Si_p_doped.chemical_potential_i,'--','LineWidth',2,...
              'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
         plot(Si_p_doped.temperature,...
             Si_p_doped.chemical_potential,...
@@ -50,7 +50,7 @@ figure(2)
 
     hold on
     set(gcf,'color','w');
-    plot(Si_p_doped.temperature,  Si_p_doped.n_i/Si_p_doped.dopant_density,'.','LineWidth',1,'Color',...
+    plot(Si_p_doped.temperature,  Si_p_doped.n_i/Si_p_doped.dopant_density,'.','LineWidth',2,'Color',...
          [1 0 0],'DisplayName','Si_p_doped');
     plot(Si_p_doped.temperature, Si_p_doped.main_charge_carrier_number/Si_p_doped.dopant_density,'LineWidth',2,'Color',...
          [1 0 0],'DisplayName','Si_p_doped');
@@ -100,10 +100,10 @@ h=figure(4);
         hold on
 
         plot(Ge_p_doped.temperature,Ge_p_doped.E_V * ones(size(Si_p_doped.temperature)),... 
-             'LineWidth',1,'Color',[0 0 1],'DisplayName','Ge E_V');
+             'LineWidth',2,'Color',[0 0 1],'DisplayName','Ge E_V');
         plot(Ge_p_doped.temperature,Ge_p_doped.E_C * ones(size(Si_p_doped.temperature)),... 
-             'LineWidth',1,'Color','k','DisplayName','Ge E_C');
-        plot(Ge_p_doped.temperature,Ge_p_doped.chemical_potential_i,'--','LineWidth',1,...
+             'LineWidth',2,'Color','k','DisplayName','Ge E_C');
+        plot(Ge_p_doped.temperature,Ge_p_doped.chemical_potential_i,'--','LineWidth',2,...
              'Color',[1 0 0],'DisplayName','Ge E_F_intrinsic');
         plot(Ge_p_doped.temperature,...
             Ge_p_doped.chemical_potential,...
@@ -128,10 +128,10 @@ h=figure(5);
         hold on
 
         plot(GaAs_p_doped.temperature,GaAs_p_doped.E_V * ones(size(Si_p_doped.temperature)),... 
-             'LineWidth',1,'Color',[0 0 1],'DisplayName','GaAs E_V');
+             'LineWidth',2,'Color',[0 0 1],'DisplayName','GaAs E_V');
         plot(GaAs_p_doped.temperature,GaAs_p_doped.E_C * ones(size(Si_p_doped.temperature)),... 
-             'LineWidth',1,'Color','k','DisplayName','GaAs E_C');
-        plot(GaAs_p_doped.temperature,GaAs_p_doped.chemical_potential_i,'--','LineWidth',1,...
+             'LineWidth',2,'Color','k','DisplayName','GaAs E_C');
+        plot(GaAs_p_doped.temperature,GaAs_p_doped.chemical_potential_i,'--','LineWidth',2,...
              'Color',[1 0 0],'DisplayName','GaAs E_F_intrinsic');
         plot(GaAs_p_doped.temperature,...
             GaAs_p_doped.chemical_potential,...
@@ -157,11 +157,11 @@ figure(6)
 
     hold on
     set(gcf,'color','w');
-    plot(Si_p_dopednew.temperature,  Si_p_dopednew.n_i/Si_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
+    plot(Si_p_dopednew.temperature,  Si_p_dopednew.n_i/Si_p_dopednew.dopant_density,'.','LineWidth',2,'Color',...
          [1 0 0],'DisplayName','Si_p_dopednew');
-         plot(Ge_p_dopednew.temperature,  Ge_p_dopednew.n_i/Ge_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
+         plot(Ge_p_dopednew.temperature,  Ge_p_dopednew.n_i/Ge_p_dopednew.dopant_density,'.','LineWidth',2,'Color',...
          'g','DisplayName','Ge_p_dopednew');
-         plot(GaAs_p_dopednew.temperature,  GaAs_p_dopednew.n_i/GaAs_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
+         plot(GaAs_p_dopednew.temperature,  GaAs_p_dopednew.n_i/GaAs_p_dopednew.dopant_density,'.','LineWidth',2,'Color',...
          'b','DisplayName','GaAs_p_dopednew');
     plot(Si_p_dopednew.temperature, Si_p_dopednew.main_charge_carrier_number/Si_p_dopednew.dopant_density,'LineWidth',2,'Color',...
          [1 0 0],'DisplayName','Si_p_dopednew');
@@ -256,36 +256,41 @@ end
 %###################### Results of Task 2 a) and b) ####################### 
 
 %------------------------- plot simulation results -> task a) --------------
-figure();
+
+figure(8);
 set(gcf,'color','w');
-semilogx(ND_vector, chemical_potential_vector_a);
+semilogx(ND_vector, chemical_potential_vector_a,'LineWidth',2);
 grid on
 xlabel('N_D / 1');
 ylabel('\mu / ev');
 xlim([ND_vector(1), ND_vector(end)]);
 
 %------------------------- plot simulation results -> task b) -------------
-figure();
+figure(9);
 set(gcf,'color','w');
-semilogx(ND_vector, chemical_potential_vector_b);
+semilogx(ND_vector, chemical_potential_vector_b,'LineWidth',2);
 grid on
 xlabel('N_D / 1');
 ylabel('\mu / ev');
 xlim([ND_vector(1), ND_vector(end)]);
-
 
 %------------------------ plot combined results -> task a) and b) ---------
 figure();
-semilogx(ND_vector, chemical_potential_vector_a);
+set(gcf,'color','w');
+semilogx(ND_vector, chemical_potential_vector_a,'LineWidth',2);
 hold on;
-semilogx(ND_vector, chemical_potential_vector_b);
+semilogx(ND_vector, chemical_potential_vector_b,'LineWidth',2);
 hold off;
+ax = gca;
+ax.FontSize = 11;
 grid on
 xlabel('N_D / 1');
 ylabel('\mu / ev');
 xlim([ND_vector(1), ND_vector(end)]);
-legend('sharp level shape','gaussian shape')
+legend('dirac shape donor states','gaussian shape donor states','location','northwest')
     
+
+
     
     
     
