@@ -8,7 +8,11 @@ temperature = linspace(10,800,100); % vector with temperatures in K
 [Si_p_doped] = simulate_semiconductor('Si', 0.1, 'sharp', 1e21,'p-doped', temperature);
 [Ge_p_doped] = simulate_semiconductor('Ge', 0.1, 'sharp', 1e21,'p-doped', temperature);
 [GaAs_p_doped] = simulate_semiconductor('GaAs', 0.1, 'sharp', 1e21,'p-doped', temperature);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                         TASK 1                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%                         TASK 1(a,b)                               %%
 clf(figure(1))
 h=figure(1);
          
@@ -36,7 +40,7 @@ grid on
         xlabel('temperature / K');
         ylabel('energy / eV');
         
-% figure 
+
 clf(figure(2))
 figure(2)
 
@@ -48,108 +52,134 @@ figure(2)
          [1 0 0],'DisplayName','Si_p_doped');
 
     title({'electron density vs temperature',' ',...
-          'in GaAs at N_D = 10^{21} m^3'});
+          'in Si-p-doped at N_A = 10^{21} m^3'});
                 ax = gca;
 ax.FontSize = 11;
 grid on
-    legend('n_i/N_D','n/N_D', 'Location' ,'northeastoutside');
+    legend('n_i/N_A','n/N_A', 'Location' ,'northeastoutside');
 
     ylim([0 2.0]);
     xlabel('temperature / K');
-    ylabel('electron density / N_D');
+    ylabel('hole density / N_A');
+clf(figure(3))
+figure(3)
+ % correct for evalation errors
+    Si_p_doped.ionized_dopants(find(Si_p_doped.ionized_dopants == 1)) = 0;
 
+    hold on
+    
+    plot(Si_p_doped.temperature, Si_p_doped.ionized_dopants,'LineWidth',2,'Color',[1 0 0],...
+         'DisplayName','Ge');
+    legend('N_A^+/N_A', 'Location' ,'northeastoutside');
+    
+    title({'number of ionized dopants vs temperature',' ',...
+           'in Si at N_A = 10^{21} m^3'}); 
+
+               ax = gca;
+ax.FontSize = 11;
+grid on
+    
+    ylim([0 1.1]);
+    xlabel('temperature / K');
+    ylabel('density of ionized dopants/ N_A');
         
+    
+%%%                         TASK 1(c)                                      %%%     
+
+
+% chemical potential doped Ge%       
+clf(figure(4))
+h=figure(4);
+         
+         set(gcf,'color','w');
+        hold on
+
+        plot(Ge_p_doped.temperature,Ge_p_doped.E_V * ones(size(Si_p_doped.temperature)),... 
+             'LineWidth',1,'Color',[0 0 1],'DisplayName','Ge E_V');
+        plot(Ge_p_doped.temperature,Ge_p_doped.E_C * ones(size(Si_p_doped.temperature)),... 
+             'LineWidth',1,'Color','k','DisplayName','Ge E_C');
+        plot(Ge_p_doped.temperature,Ge_p_doped.chemical_potential_i,'--','LineWidth',1,...
+             'Color',[1 0 0],'DisplayName','Ge E_F_intrinsic');
+        plot(Ge_p_doped.temperature,...
+            Ge_p_doped.chemical_potential,...
+            'LineWidth',2,'Color',[0 1 0],'DisplayName','Ge \mu');
+
+        title({'chemical potential vs temperature',' ',...
+               'in Ge at N_A = 10^{21} m^3'});
+           ax = gca;
+ax.FontSize = 11;
+grid on
+        legend('E_V','E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
+ 
+        ylim([0 1.4]);
+        xlabel('temperature / K');
+        ylabel('energy / eV');    
         
-        
-        
-% clf(figure(2))
-% figure(2)
-%         hold on
-% 
-%         plot(Ge_p_doped.temperature,Ge_p_doped.E_V * ones(size(Ge_p_doped.temperature)),... 
-%              'LineWidth',1,'Color',[0 0 1],'DisplayName','Si E_C');
-%         plot(Ge_p_doped.temperature,Ge_p_doped.chemical_potential_i,'--','LineWidth',1,...
-%              'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
-%         plot(Ge_p_doped.temperature(find(Ge_p_doped.chemical_potential > Ge_p_doped.E_V)),...
-%             Ge_p_doped.chemical_potential(find(Ge_p_doped.chemical_potential > Ge_p_doped.E_V)),...
-%             'LineWidth',2,'Color',[0 1 0],'DisplayName','Si \mu');
-% 
-%         title({'chemical potential vs temperature',' ',...
-%                'in Si at N_A = 10^{21} m^3'});
-%         legend('E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
-% 
-%         ylim([0 1.5]);
-%         xlabel('temperature / K');
-%         ylabel('energy / eV');
-%         
-% clf(figure(3))
-% figure(3)
-%         hold on
-% 
-%         plot(GaAs_p_doped.temperature,GaAs_p_doped.E_V * ones(size(GaAs_p_doped.temperature)),... 
-%              'LineWidth',1,'Color',[0 0 1],'DisplayName','Si E_C');
-%         plot(GaAs_p_doped.temperature,GaAs_p_doped.chemical_potential_i,'--','LineWidth',1,...
-%              'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
-%         plot(GaAs_p_doped.temperature(find(GaAs_p_doped.chemical_potential > GaAs_p_doped.E_V)),...
-%             GaAs_p_doped.chemical_potential(find(GaAs_p_doped.chemical_potential > GaAs_p_doped.E_V)),...
-%             'LineWidth',2,'Color',[0 1 0],'DisplayName','Si \mu');
-% 
-%         title({'chemical potential vs temperature',' ',...
-%                'in Si at N_A = 10^{21} m^3'});
-%         legend('E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
-% 
-%         ylim([0 1.5]);
-%         xlabel('temperature / K');
-%         ylabel('energy / eV');
-% 
-% 
-% clf(figure(4))    
-% figure(4)
-% 
-%     hold on
-% 
-%     plot(Si_p_doped.temperature, Si_p_doped.n_i/Si_p_doped.dopant_density,'.','LineWidth',1,'Color',...
-%          [1 0 0],'DisplayName','Si');
-%      plot(Ge_p_doped.temperature, Ge_p_doped.n_i/Ge_p_doped.dopant_density,'.','LineWidth',1,'Color',...
-%          'b','DisplayName','Si');
-%      plot(GaAs_p_doped.temperature, GaAs_p_doped.n_i/GaAs_p_doped.dopant_density,'.','LineWidth',1,'Color',...
-%          'g','DisplayName','Si');
-%     plot(Si_p_doped.temperature, Si_p_doped.main_charge_carrier_number/Si_p_doped.dopant_density,'LineWidth',2,'Color',...
-%          [1 0 0],'DisplayName','Si');
-% 
-%     title({'hole density vs temperature',' ',...
-%           'in Si at N_A = 10^{21} m^3'}); 
-%     legend('n_i/N_A','p/N_A', 'Location' ,'northeastoutside');  
-% 
-%     ylim([0 2.0]);
-%     xlabel('temperature / K');
-%     ylabel('hole density / N_A');
-% 
-% clf(figure(5))    
-% figure(5)
-% 
-% 
-%     % correct for evalation errors
-%     Si_p_doped.ionized_dopants(find(Si_p_doped.ionized_dopants == 1)) = 0;
-% 
-%     hold on
-%     title({'number of ionized dopants vs temperature',' ',...
-%            'in Si at N_A = 10^{21} m^3'}); 
-% 
-%     plot(Si_p_doped.temperature, Si_p_doped.ionized_dopants,'LineWidth',2,'Color',[1 0 0],...
-%          'DisplayName','Ge');
-%     legend('N_A^+/N_A', 'Location' ,'northeastoutside');
-% 
-%     ylim([0 1.1]);
-%     xlabel('temperature / K');
-%     ylabel('density of ionized dopants/ N_A');
-%     
-%   
-%     
-%     
-% [Si_n_doped] = simulate_semiconductor('Si', -0.1, 1e21,'n-doped');
-% 
-% 
+% chemical potential doped Ge, GaAs%      
+clf(figure(5))
+h=figure(5);
+         
+         set(gcf,'color','w');
+        hold on
+
+        plot(GaAs_p_doped.temperature,GaAs_p_doped.E_V * ones(size(Si_p_doped.temperature)),... 
+             'LineWidth',1,'Color',[0 0 1],'DisplayName','GaAs E_V');
+        plot(GaAs_p_doped.temperature,GaAs_p_doped.E_C * ones(size(Si_p_doped.temperature)),... 
+             'LineWidth',1,'Color','k','DisplayName','GaAs E_C');
+        plot(GaAs_p_doped.temperature,GaAs_p_doped.chemical_potential_i,'--','LineWidth',1,...
+             'Color',[1 0 0],'DisplayName','GaAs E_F_intrinsic');
+        plot(GaAs_p_doped.temperature,...
+            GaAs_p_doped.chemical_potential,...
+            'LineWidth',2,'Color',[0 1 0],'DisplayName','GaAs \mu');
+
+        title({'chemical potential vs temperature',' ',...
+               'in GaAs at N_A = 10^{21} m^3'});
+           ax = gca;
+ax.FontSize = 11;
+grid on
+        legend('E_V','E_C','\mu_i','\mu', 'Location' ,'northeastoutside');
+ 
+        ylim([0 1.4]);
+        xlabel('temperature / K');
+        ylabel('energy / eV');  
+% intrinsic and main chrge carrier Si, Ge , GaAs%   
+temperaturenew=linspace(10,1200,100);
+[Si_p_dopednew] = simulate_semiconductor('Si', 0.1, 1e21,'p-doped', temperaturenew);
+[Ge_p_dopednew] = simulate_semiconductor('Ge', 0.1, 1e21,'p-doped', temperaturenew);
+[GaAs_p_dopednew] = simulate_semiconductor('GaAs', 0.1, 1e21,'p-doped', temperaturenew);
+clf(figure(6))
+figure(6)
+
+    hold on
+
+    plot(Si_p_dopednew.temperature,  Si_p_dopednew.n_i/Si_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
+         [1 0 0],'DisplayName','Si_p_dopednew');
+         plot(Ge_p_dopednew.temperature,  Ge_p_dopednew.n_i/Ge_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
+         'g','DisplayName','Ge_p_dopednew');
+         plot(GaAs_p_dopednew.temperature,  GaAs_p_dopednew.n_i/GaAs_p_dopednew.dopant_density,'.','LineWidth',1,'Color',...
+         'b','DisplayName','GaAs_p_dopednew');
+    plot(Si_p_dopednew.temperature, Si_p_dopednew.main_charge_carrier_number/Si_p_dopednew.dopant_density,'LineWidth',2,'Color',...
+         [1 0 0],'DisplayName','Si_p_dopednew');
+         plot(Ge_p_dopednew.temperature, Ge_p_dopednew.main_charge_carrier_number/Ge_p_dopednew.dopant_density,'LineWidth',2,'Color',...
+         'g','DisplayName','Si_p_doped');
+         plot(GaAs_p_dopednew.temperature, GaAs_p_dopednew.main_charge_carrier_number/GaAs_p_dopednew.dopant_density,'LineWidth',2,'Color',...
+         'b','DisplayName','Si_p_doped');
+     
+
+    title({'electron density vs temperature',' ',...
+          'in Si-p-doped at N_A = 10^{21} m^3'});
+                ax = gca;
+ax.FontSize = 11;
+grid on
+   % legend('n_i/N_A','n/N_A', 'Location' ,'northeastoutside');
+
+  
+    xlabel('temperature / K');
+    ylabel('hole density / N_A');
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%                         TASK 2                                       %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
