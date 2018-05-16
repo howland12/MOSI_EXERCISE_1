@@ -211,6 +211,45 @@ grid on
     ylim([0 1.1]);
     xlabel('temperature / K');
     ylabel('density of ionized dopants/ N_A');
+    
+   
+%%%                         TASK 1(d)                                      %%%     
+
+bandgap_multiplier_vec=linspace(0.1,2,5);
+bandgap_container = cell(1,length(bandgap_multiplier_vec));
+for i = 1 : length(bandgap_multiplier_vec)
+    bandgap_container{1,i} = simulate_semiconductor('Si', 0.1, 'sharp', 10^21,'p-doped', temperature, bandgap_multiplier_vec(i), e_m_n_multiplier, e_m_p_multiplier);
+end
+bandgap_potential_vec= zeros([ length(bandgap_multiplier_vec) length(temperature)]);
+for i = 1 : length(bandgap_multiplier_vec)
+    bandgap_potential_vec(i,:) = bandgap_container{i}.chemical_potential;
+end
+figure(11)
+hold on
+for i=1: length(bandgap_multiplier_vec)
+    plot(temperature,bandgap_potential_vec(i,:))
+end
+
+
+
+e_m_p_multiplier_vec=linspace(0.1,2,5);
+mass_container = cell(1,length(e_m_p_multiplier_vec));
+for i = 1 : length(e_m_p_multiplier_vec)
+    mass_container{1,i} = simulate_semiconductor('Si', 0.1, 'sharp', 10^21,'p-doped', temperature, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier_vec(i));
+end
+mass_potential_vec= zeros([ length(e_m_p_multiplier_vec) length(temperature)]);
+for i = 1 : length(e_m_p_multiplier_vec)
+    mass_potential_vec(i,:) = mass_container{i}.chemical_potential;
+end
+figure(12)
+hold on
+for i=1: length(e_m_p_multiplier_vec)
+    plot(temperature,mass_potential_vec(i,:))
+end
+    
+    
+
+
 
 
 
