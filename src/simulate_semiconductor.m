@@ -1,4 +1,4 @@
-function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, energy_level_shape, dopant_density, doping_type, temperature, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier)
+function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_energy, dopant_density, doping_type, temperature, trapstate_energy, trapstate_density, trapstate_type, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier)
 
 
     % -----------------------------------------------------------------------
@@ -74,28 +74,26 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
     % add hole band, add empty vector for hole occupation
     DOS_admin = AddValenceBandToDOS(DOS_admin,energies,E_V,m_p_eff);
 
-    % add donor level 100meV above valence band, 
-    % level become positive upon emptying
-    
-    if doping_type == 'p-doped'
-        if strcmp(energy_level_shape,'sharp')
+    % add donor level
+    if strcmp(doping_type, 'p-doped')
             DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
                                    E_V + doping_energy, 'N');
-        else
-            DOS_admin  = AddGaussToDOS(DOS_admin,energies,dopant_density,...
-                                   E_V + doping_energy, 50e-3, 'N');
-        end
     else
-        if strcmp(energy_level_shape,'sharp')
             DOS_admin  = AddLevelToDOS(DOS_admin,energies,dopant_density,...
                                    E_C + doping_energy, 'P');
-        else
-            DOS_admin  = AddGaussToDOS(DOS_admin,energies,dopant_density,...
-                                   E_C + doping_energy, 50e-3, 'P');
-        end
     end
 
-
+    % add trap state
+    if trapstate_density ~= 0
+        if strcmp(trapstate_type,'p-charged')
+            DOS_admin  = AddGaussToDOS(DOS_admin,energies,trapstate_density,...
+                                   trapstate_energy, 50e-3, 'N');
+        else
+            DOS_admin  = AddGaussToDOS(DOS_admin,energies,trapstate_density,...
+                                   trapstate_energy, 50e-3, 'P');
+        end
+    end
+        
     %-------------------------------------------------------------------------
     % (4a) investigate impact of temperature
     %-------------------------------------------------------------------------
@@ -146,7 +144,7 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
             FindRootNestedIntervals(fh,energies, ...
             chemical_potential_i(k), tolerance, max_RF_iter);
 
-        if doping_type == 'p-doped'
+        if strcmp(doping_type, 'p-doped')
             
             main_charge_carrier_number(k) = GetDensityInBand(chemical_potential(k), ...
                                      E_V, m_p_eff, temperature(k));
