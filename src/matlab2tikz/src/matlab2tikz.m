@@ -333,10 +333,10 @@ function matlab2tikz(varargin)
     %% Save the figure as TikZ to file
     m2t = saveToFile(m2t, fid, fileWasOpen);
 
-    %% Check for a new matlab2tikz version outside version control
-    if m2t.args.checkForUpdates
-        m2tUpdater(m2t.about, m2t.args.showInfo);
-    end
+%     %% Check for a new matlab2tikz version outside version control
+%     if m2t.args.checkForUpdates
+%         m2tUpdater(m2t.about, m2t.args.showInfo);
+%     end
 
 end
 % ==============================================================================
