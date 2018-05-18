@@ -1,3 +1,4 @@
 /src/*.m~
 
 /src/*.asv
+/src/results/*
