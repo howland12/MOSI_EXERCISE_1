@@ -192,7 +192,7 @@ legend('{(n_i/N_A)}_{Si}','{(n_i/N_A)}_{Ge}','{(n_i/N_A)}_{GaAs}','{(p/N_A)}_{Si
   
 xlabel('temperature / K');
 ylabel('hole density / N_A');
-matlab2tikz('results/GaAs_p_doped_N_A_=1e21_ni_n_vs_NA.tex','showInfo', false);
+matlab2tikz('results/All_p_doped_N_A_=1e21_ni_n_vs_NA.tex','showInfo', false);
     
 
 % ionized dopants Si, Ge ,GaAs   
@@ -251,6 +251,7 @@ grid on
 xlabel('temperature / K');
 ylabel('\mu/ eV');
 legend(legendInfo,'Location','Northwest');
+matlab2tikz('results/Si_p_doped_mu_vs_temperature_bangap_modified.tex','showInfo', false);
 
 
 e_m_p_multiplier_vec=linspace(0.1,2,5);
@@ -269,15 +270,14 @@ set(gcf,'color','w');
 hold on
 for i=1: length(e_m_p_multiplier_vec)
     plot(temperature,mass_potential_vec(i,:),'LineWidth',2)
-    legendInfo{i} = ['e\_m\_p = ' num2str(bandgap_multiplier_vec(i)) ' * e\_m\_n_{Si}' ];
+    legendInfo{i} = ['e\_m\_p = ' num2str(e_m_p_multiplier_vec(i)) ' * e\_m\_n_{Si}' ];
 end
 hold off
 grid on
 xlabel('temperature / K');
 ylabel('\mu/ eV');
 legend(legendInfo,'Location','Northwest');
-matlab2tikz('results/Si_p_doped_mu_vs_temperature_bangap_modified.tex','showInfo', false);
-
+matlab2tikz('results/Si_p_doped_mu_vs_temperature_e_m_p_modified.tex','showInfo', false);
 
 
 
@@ -331,7 +331,7 @@ figure();
 set(gcf,'color','w');
 semilogx(ND_vector, chemical_potential_vector_a,'g-.','LineWidth',2);
 hold on;
-semilogx(ND_vector, chemical_potential_vector_b,'LineWidth',2);
+semilogx(ND_vector, chemical_potential_vector_b,'cyan','LineWidth',2);
 semilogx(ND_vector,Si_p_doped.E_V * ones(size(ND_vector)),... 
 'LineWidth',2,'Color',[0 0 1],'DisplayName','Si E_V');
 semilogx(ND_vector, chemical_potential_vector_intrinsic,'--','LineWidth',2,...
@@ -342,7 +342,7 @@ hold off;
 ax = gca;
 ax.FontSize = 11;
 grid on
-xlabel('N_D / 1');
+xlabel('N_D / m^{-3}');
 ylabel('\mu / ev');
 xlim([ND_vector(1), ND_vector(end)]);
 legend('\mu','\mu_t','E_V','\mu_i','E_C', 'Location' ,'northeastoutside');

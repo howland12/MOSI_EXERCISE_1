@@ -12,7 +12,7 @@ function [struct_semiconductor] = simulate_semiconductor( semiconductor, doping_
     % + all energies are given in eV
 
     %-------------------------------------------------------------------------
-    %--- parameter section ---------------------------------------------------
+    %--- parameter section -------------------------------------
     %-------------------------------------------------------------------------
     % 
     k_eV = 1.3806504E-23 / 1.602176487E-19; % Boltzmann constant in eV/K
