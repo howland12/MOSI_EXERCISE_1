@@ -261,8 +261,10 @@ for i = 1 : length(e_m_p_multiplier_vec)
     mass_container{1,i} = simulate_semiconductor('Si', 0.1, 10^21,'p-doped', temperature, 0, 0, 0, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier_vec(i));
 end
 mass_potential_vec= zeros([ length(e_m_p_multiplier_vec) length(temperature)]);
+mass_potential_i_vec= zeros([ length(e_m_p_multiplier_vec) length(temperature)]);
 for i = 1 : length(e_m_p_multiplier_vec)
     mass_potential_vec(i,:) = mass_container{i}.chemical_potential;
+    mass_potential_i_vec(i,:) = mass_container{i}.chemical_potential_i;
 end
 
 figure(12)
@@ -270,7 +272,8 @@ set(gcf,'color','w');
 hold on
 for i=1: length(e_m_p_multiplier_vec)
     plot(temperature,mass_potential_vec(i,:),'LineWidth',2)
-    legendInfo{i} = ['e\_m\_p = ' num2str(e_m_p_multiplier_vec(i)) ' * e\_m\_n_{Si}' ];
+    legendInfo{i} = ['e\_m\_p = ' num2str(e_m_p_multiplier_vec(i)) ' * e\_m\_p_{Si}' ];
+    plot(temperature,mass_potential_i_vec(i,:),'LineWidth',2)
 end
 hold off
 grid on
@@ -293,23 +296,52 @@ donor_state_energy = Si_p_doped.E_C - 0.1;
 %############################## a #########################################
 
 %-------------------------- simulation loop -> task a) --------------------
-data_container_a = cell(1,length(ND_vector));
+data_container_a_Si = cell(1,length(ND_vector));
 for i = 1 : length(ND_vector)
-    data_container_a{1,i} = simulate_semiconductor('Si', donor_state_energy, ND_vector(i),'n-doped', temperature, 0, 0, 0, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier);
+    data_container_a_Si{1,i} = simulate_semiconductor('Si', donor_state_energy, ND_vector(i),'n-doped', temperature, 0, 0, 0, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier);
 end
 
 %---------------------- extract needed data from container -> task a) -----
-chemical_potential_vector_a = zeros([1 length(ND_vector)]);
-chemical_potential_vector_intrinsic = zeros([1 length(ND_vector)]);
+chemical_potential_vector_a_Si = zeros([1 length(ND_vector)]);
+chemical_potential_vector_intrinsic_Si = zeros([1 length(ND_vector)]);
 for i = 1 : length(ND_vector)
-    chemical_potential_vector_a(i) = data_container_a{i}.chemical_potential;
-    chemical_potential_vector_intrinsic(i) = data_container_a{i}.chemical_potential_i;
+    chemical_potential_vector_a_Si(i) = data_container_a_Si{i}.chemical_potential;
+    chemical_potential_vector_intrinsic_Si(i) = data_container_a_Si{i}.chemical_potential_i;
 end
+
+
+data_container_a_Ge = cell(1,length(ND_vector));
+for i = 1 : length(ND_vector)
+    data_container_a_Ge{1,i} = simulate_semiconductor('Ge', donor_state_energy, ND_vector(i),'n-doped', temperature, 0, 0, 0, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier);
+end
+
+%---------------------- extract needed data from container -> task a) -----
+chemical_potential_vector_a_Ge = zeros([1 length(ND_vector)]);
+chemical_potential_vector_intrinsic_Ge = zeros([1 length(ND_vector)]);
+for i = 1 : length(ND_vector)
+    chemical_potential_vector_a_Ge(i) = data_container_a_Ge{i}.chemical_potential;
+    chemical_potential_vector_intrinsic_Ge(i) = data_container_a_Ge{i}.chemical_potential_i;
+end
+
+
+data_container_a_GaAs = cell(1,length(ND_vector));
+for i = 1 : length(ND_vector)
+    data_container_a_GaAs{1,i} = simulate_semiconductor('GaAs', donor_state_energy, ND_vector(i),'n-doped', temperature, 0, 0, 0, bandgap_multiplier, e_m_n_multiplier, e_m_p_multiplier);
+end
+
+%---------------------- extract needed data from container -> task a) -----
+chemical_potential_vector_a_GaAs = zeros([1 length(ND_vector)]);
+chemical_potential_vector_intrinsic_GaAs = zeros([1 length(ND_vector)]);
+for i = 1 : length(ND_vector)
+    chemical_potential_vector_a_GaAs(i) = data_container_a_GaAs{i}.chemical_potential;
+    chemical_potential_vector_intrinsic_GaAs(i) = data_container_a_GaAs{i}.chemical_potential_i;
+end
+
 
 %############################## b #########################################
 
 %-------------------------- simulation loop -> task b) --------------------
-trap_state_energy = (data_container_a{1}.E_C / 2 - 0.1);
+trap_state_energy = (data_container_a_Si{1}.E_C / 2 - 0.1);
 trap_state_density = 1e22;
 trap_state_type = 'n-charged';
 ND_vector = logspace(13,25,100);
@@ -326,15 +358,40 @@ end
 
 %###################### Results of Task 2 a) and b) ####################### 
 
+
+%###################### Results of Task 2 a) and b) ####################### 
+
+%------------------------ plot combined results -> task a) ---------
+figure();
+set(gcf,'color','w');
+semilogx(ND_vector, chemical_potential_vector_a_Si,'g','LineWidth',2);
+hold on;
+semilogx(ND_vector, chemical_potential_vector_intrinsic_Si,'g--','LineWidth',2);
+semilogx(ND_vector, chemical_potential_vector_a_Ge,'cyan','LineWidth',2);
+semilogx(ND_vector, chemical_potential_vector_intrinsic_Ge,'cyan--','LineWidth',2);
+semilogx(ND_vector, chemical_potential_vector_a_GaAs,'red','LineWidth',2);
+semilogx(ND_vector, chemical_potential_vector_intrinsic_GaAs,'r--','LineWidth',2);
+
+hold off;
+ax = gca;
+ax.FontSize = 11;
+grid on
+xlabel('N_D / m^{-3}');
+ylabel('\mu / ev');
+xlim([ND_vector(1), ND_vector(end)]);
+legend('{\mu}_{Si}', '{({\mu}_{i})}_{Si}','{\mu}_{Ge}','{({\mu}_{i})}_{Ge}','{\mu}_{GaAs}','{({\mu}_{i})}_{GaAs}', 'Location' ,'northeastoutside');
+matlab2tikz('results/Si_Ge_GaAs_vs_doping_concentration.tex','showInfo', false);
+
+
 %------------------------ plot combined results -> task a) and b) ---------
 figure();
 set(gcf,'color','w');
-semilogx(ND_vector, chemical_potential_vector_a,'g-.','LineWidth',2);
+semilogx(ND_vector, chemical_potential_vector_a_Si,'g-.','LineWidth',2);
 hold on;
 semilogx(ND_vector, chemical_potential_vector_b,'cyan','LineWidth',2);
 semilogx(ND_vector,Si_p_doped.E_V * ones(size(ND_vector)),... 
 'LineWidth',2,'Color',[0 0 1],'DisplayName','Si E_V');
-semilogx(ND_vector, chemical_potential_vector_intrinsic,'--','LineWidth',2,...
+semilogx(ND_vector, chemical_potential_vector_intrinsic_Si,'--','LineWidth',2,...
          'Color',[1 0 0],'DisplayName','Si E_F_intrinsic');
 semilogx(ND_vector,Si_p_doped.E_C * ones(size(ND_vector)),... 
 'LineWidth',2,'Color','k','DisplayName','Si E_C');
